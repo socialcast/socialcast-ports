@@ -26,23 +26,19 @@ depends_lib       bin:java:kaffe
 conflicts         ${name}
 default_variants  +symlinks
 use_configure     no
-build.cmd         false
+patchfiles        elasticsearch.bin.diff
 
-pre-destroot {
-  foreach f [glob -directory ${worksrcpath}/bin *.bat] {
-    file delete $f
-  }
-}
+build {}
 
 destroot {
   xinstall -m 755 -d ${destroot}${prefix}/share/java
-  file copy ${worksrcpath} ${destroot}${prefix}/share/java/${packagename}
+  file copy ${worksrcpath} ${destroot}${prefix}/share/java/${name}
 }
 
 variant symlinks description {Installs symlinks into ${prefix}/bin} {
   post-destroot {
-    foreach f { NetworkServerControl dblook derby_common.sh ij setEmbeddedCP setNetworkClientCP setNetworkServerCP startNetworkServer stopNetworkServer sysinfo } {
-      system "ln -fs ${prefix}/share/java/${packagename}/bin/$f ${destroot}${prefix}/bin/$f"
+    foreach f { elasticsearch } {
+      system "ln -fs ${prefix}/share/java/${name}/bin/$f ${destroot}${prefix}/bin/$f"
     }
   }
 }
